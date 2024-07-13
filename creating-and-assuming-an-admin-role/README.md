@@ -3,9 +3,9 @@ In this lab, I am going to create a brand-new IAM Role within your AWS Sandbox a
 
 ## Challenge Objectives
 1. Create IAM Role
-   * Create a brand-new IAM role named CSAA_AdministratorTest and attach the AWS-managed policy titled `AdministratorAccess`.
-   * Copy the [IAM Trust Policy](https://github.com/vineeth-pradhan/aws-workshop/blob/main/creating-and-assuming-an-admin-role/policies/policy.json) from policies/policy.json repo and update `%REPLACE_WITH_ACCOUNT_ID%` with your account ID. This policy will only allow an IAM identity with your user account's ARN to assume the role
-   *  The naming convention for this step is critical to avoid conflicts in future steps!
+   * Create a brand-new IAM role named `AdministratorTest` and attach the AWS-managed policy titled `AdministratorAccess`.
+   * Copy the [IAM Trust Policy](https://github.com/vineeth-pradhan/aws-workshop/blob/main/creating-and-assuming-an-admin-role/policies/policy.json) and update `%REPLACE_WITH_ACCOUNT_ID%` with your account ID. This policy will only allow an IAM identity with your user account's ARN to assume the role
+   *  The naming convention for this step is critical to avoid conflicts in next few steps!
 
 1. Assume the IAM Role
     * After creation, test assumption of the IAM role using the Switch Role console option.
