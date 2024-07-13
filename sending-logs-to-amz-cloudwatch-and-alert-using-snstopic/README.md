@@ -17,34 +17,33 @@ Prerequisites
 
 1. For the Filter pattern enter the following text to create a metric filter that matches for any 404 status codes.
 
-    %\b404\b%
+    `%\b404\b%`
 
-* Metric Filter Settings:
-** Filter Name: `404`
-** Metric namespace: `Apache`
-** Metric name: `404`
-** Metric value: `1`
-** Default value: _blank_
-** Unit: Count
-** For testing, open the public IP of the ApacheWebServer instance in your browser, change the URL to http and append a fake page on the end (Example: http://YOUR_PUBLIC_IP/fake.html).
+    * Metric Filter Settings:
+        * Filter Name: `404`
+        * Metric namespace: `Apache`
+        * Metric name: `404`
+        * Metric value: `1`
+        * Default value: _blank_
+        * Unit: Count
+        * For testing, open the public IP of the ApacheWebServer instance in your browser, change the URL to http and append a fake page on the end (Example: http://YOUR_PUBLIC_IP/fake.html).
 
-1. Create SNS Topic and CloudWatch Alarm
-1. Now, we can put it all together and set up a new CloudWatch Alarm to send a message through Amazon SNS to notify us whenever a 404 is detected in our Log Group.
+8. Create SNS Topic and CloudWatch Alarm
+9. Now, we can put it all together and set up a new CloudWatch Alarm to send a message through Amazon SNS to notify us whenever a 404 is detected in our Log Group.
 
-1. Create a new alarm via the CloudWatch Alarms dashboard for the newly created Apache namespace.
+10. Create a new alarm via the CloudWatch Alarms dashboard for the newly created Apache namespace.
 
-> Hint: There is a shortcut from within the graphed metric section.
+    > Hint: There is a shortcut from within the graphed metric section.
 
-1. Alarm Metric Settings:
+11. Alarm Metric Settings:
+    * Metric namespace: `Apache`
+    * Metric name: `404`
+    * Statistic: `Sum`
+    * Alarm Conditions Settings:
+    * Threshold type: `Static`
+    * Whenever 404 is...: `Greater/Equal`
+    * than: `0`
+    * Alarm state trigger: `In alarm`
+    * Alarm name: `404-Detections`
 
-** Metric namespace: `Apache`
-** Metric name: `404`
-** Statistic: `Sum`
-** Alarm Conditions Settings:
-** Threshold type: `Static`
-** Whenever 404 is...: `Greater/Equal`
-** than: `0`
-** Alarm state trigger: `In alarm`
-** Alarm name: `404-Detections`
-
-1. Then, create a new SNS topic named `404-Alerts` and confirm subscription to it received on your email before moving further. Then, refresh the fake ApacheWebServer page to generate 404 errors and test the alarm.
+12. Then, create a new SNS topic named `404-Alerts` and confirm subscription to it received on your email before moving further. Then, refresh the fake ApacheWebServer page to generate 404 errors and test the alarm.
