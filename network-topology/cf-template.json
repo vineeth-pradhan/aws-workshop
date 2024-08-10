@@ -1,0 +1,106 @@
+{
+	"Resources": {
+		"VPC": {
+			"Type": "AWS::EC2::VPC",
+			"Properties": {
+				"CidrBlock": "192.0.0.0/16",
+				"EnableDnsSupport": "true",
+				"EnableDnsHostnames": "true",
+				"Tags": [
+					{
+						"Key": "Name",
+						"Value": "vpc-02"
+					}
+				]
+			}
+		},
+		"SecurityGroup": {
+			"Type": "AWS::EC2::SecurityGroup",
+			"Properties": {
+				"GroupDescription": "vpc-02 security group",
+				"GroupName": "sg-02",
+				"SecurityGroupIngress": [
+					{
+						"IpProtocol": "tcp",
+						"FromPort": 80,
+						"ToPort": 80,
+						"CidrIp": "0.0.0.0/0"
+					}
+				],
+				"SecurityGroupEgress": [
+					{
+						"IpProtocol": "tcp",
+						"FromPort": 80,
+						"ToPort": 80,
+						"CidrIp": "0.0.0.0/0"
+					}
+				],
+				"VpcId": {
+					"Ref": "VPC"
+				}
+			}
+		},
+		"Subnet1": {
+			"Type": "AWS::EC2::Subnet",
+			"Properties": {
+				"VpcId": {
+					"Ref": "VPC"
+				},
+				"CidrBlock": "192.0.1.0/24",
+				"AvailabilityZone": "ap-south-1a",
+				"Tags": [
+					{
+						"Key": "Name",
+						"Value": "192.0.1.0/24 - private - ap-south-1a"
+					}
+				]
+			}
+		},
+		"Subnet2": {
+			"Type": "AWS::EC2::Subnet",
+			"Properties": {
+				"VpcId": {
+					"Ref": "VPC"
+				},
+				"CidrBlock": "192.0.3.0/24",
+				"AvailabilityZone": "ap-south-1b",
+				"Tags": [
+					{
+						"Key": "Name",
+						"Value": "192.0.3.0/24 - private - ap-south-1b"
+					}
+				]
+			}
+		},
+		"Subnet3": {
+			"Type": "AWS::EC2::Subnet",
+			"Properties": {
+				"VpcId": {
+					"Ref": "VPC"
+				},
+				"CidrBlock": "192.0.2.0/24",
+				"AvailabilityZone": "ap-south-1a",
+				"Tags": [
+					{
+						"Key": "Name",
+						"Value": "192.0.2.0/24 - public - ap-south-1a"
+					}
+				]
+			}
+		}
+	},
+	"Metadata": {
+		"AWS::Composer::Groups": {
+			"Group": {
+				"Label": "Group",
+				"Members": [
+					"SecurityGroup",
+					"VPC",
+					"Subnet1",
+					"Subnet2",
+					"Subnet3"
+				]
+			}
+		}
+	}
+}
