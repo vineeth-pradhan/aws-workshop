@@ -3,7 +3,7 @@
 		"VPC": {
 			"Type": "AWS::EC2::VPC",
 			"Properties": {
-				"CidrBlock": "192.0.0.0/16",
+				"CidrBlock": "10.0.0.0/16",
 				"EnableDnsSupport": "true",
 				"EnableDnsHostnames": "true",
 				"Tags": [
@@ -46,17 +46,49 @@
 				"VpcId": {
 					"Ref": "VPC"
 				},
-				"CidrBlock": "192.0.1.0/24",
+				"CidrBlock": "10.0.1.0/24",
 				"AvailabilityZone": "ap-south-1a",
 				"Tags": [
 					{
 						"Key": "Name",
-						"Value": "192.0.1.0/24 - private - ap-south-1a"
+						"Value": "10.0.1.0/24 - private - ap-south-1a"
 					}
 				]
 			}
 		},
+		"RouteTable1": {
+			"Type": "AWS::EC2::RouteTable",
+			"Properties": {
+				"VpcId": {
+					"Ref": "VPC"
+				}
+			}
+		},
+		"RouteTable2": {
+			"Type": "AWS::EC2::RouteTable",
+			"Properties": {
+				"VpcId": {
+					"Ref": "VPC"
+				}
+			}
+		},
 		"Subnet2": {
+			"Type": "AWS::EC2::Subnet",
+			"Properties": {
+				"VpcId": {
+					"Ref": "VPC"
+				},
+				"CidrBlock": "10.0.2.0/24",
+				"AvailabilityZone": "ap-south-1a",
+				"Tags": [
+					{
+						"Key": "Name",
+						"Value": "10.0.2.0/24 - public - ap-south-1a"
+					}
+				]
+			}
+		},
+		"Subnet3": {
 			"Type": "AWS::EC2::Subnet",
 			"Properties": {
 				"VpcId": {
@@ -72,20 +104,26 @@
 				]
 			}
 		},
-		"Subnet3": {
-			"Type": "AWS::EC2::Subnet",
+		"InternetGateway": {
+			"Type": "AWS::EC2::InternetGateway",
+			"Properties": {
+				"Tags": [
+					{
+						"Key": "Name",
+						"Value": "ig-002"
+					}
+				]
+			}
+		},
+		"VPCGatewayAttachment": {
+			"Type": "AWS::EC2::VPCGatewayAttachment",
 			"Properties": {
 				"VpcId": {
 					"Ref": "VPC"
 				},
-				"CidrBlock": "192.0.2.0/24",
-				"AvailabilityZone": "ap-south-1a",
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": "192.0.2.0/24 - public - ap-south-1a"
-					}
-				]
+				"InternetGatewayId": {
+					"Ref": "InternetGateway"
+				}
 			}
 		}
 	},
@@ -97,8 +135,10 @@
 					"SecurityGroup",
 					"VPC",
 					"Subnet1",
+					"Subnet3",
 					"Subnet2",
-					"Subnet3"
+					"RouteTable1",
+					"RouteTable2"
 				]
 			}
 		}
