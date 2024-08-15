@@ -4,8 +4,8 @@
 			"Type": "AWS::EC2::VPC",
 			"Properties": {
 				"CidrBlock": "10.0.0.0/16",
-				"EnableDnsSupport": "true",
-				"EnableDnsHostnames": "true",
+				"EnableDnsSupport": true,
+				"EnableDnsHostnames": true,
 				"Tags": [
 					{
 						"Key": "Name",
@@ -18,7 +18,7 @@
 			"Type": "AWS::EC2::SecurityGroup",
 			"Properties": {
 				"GroupDescription": "vpc-02 security group",
-				"GroupName": "sg-02",
+				"GroupName": "StrictFirewall-02",
 				"SecurityGroupIngress": [
 					{
 						"IpProtocol": "tcp",
@@ -56,22 +56,6 @@
 				]
 			}
 		},
-		"RouteTable1": {
-			"Type": "AWS::EC2::RouteTable",
-			"Properties": {
-				"VpcId": {
-					"Ref": "VPC"
-				}
-			}
-		},
-		"RouteTable2": {
-			"Type": "AWS::EC2::RouteTable",
-			"Properties": {
-				"VpcId": {
-					"Ref": "VPC"
-				}
-			}
-		},
 		"Subnet2": {
 			"Type": "AWS::EC2::Subnet",
 			"Properties": {
@@ -94,35 +78,45 @@
 				"VpcId": {
 					"Ref": "VPC"
 				},
-				"CidrBlock": "192.0.3.0/24",
+				"CidrBlock": "10.0.3.0/24",
 				"AvailabilityZone": "ap-south-1b",
 				"Tags": [
 					{
 						"Key": "Name",
-						"Value": "192.0.3.0/24 - private - ap-south-1b"
+						"Value": "10.0.3.0/24 - private - ap-south-1b"
 					}
 				]
 			}
 		},
-		"InternetGateway": {
-			"Type": "AWS::EC2::InternetGateway",
-			"Properties": {
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": "ig-002"
-					}
-				]
-			}
-		},
-		"VPCGatewayAttachment": {
-			"Type": "AWS::EC2::VPCGatewayAttachment",
+		"RouteTable2": {
+			"Type": "AWS::EC2::RouteTable",
 			"Properties": {
 				"VpcId": {
 					"Ref": "VPC"
-				},
-				"InternetGatewayId": {
-					"Ref": "InternetGateway"
+				}
+			}
+		}
+	},
+	"Outputs": {
+		"PublicSubnet": {
+			"Description": "The subnet ID to use for associating route table",
+			"Value": {
+				"Ref": "Subnet2"
+			},
+			"Export": {
+				"Name": {
+					"Fn::Sub": "${AWS::StackName}-SubnetID"
+				}
+			}
+		},
+		"PublicRouteTable": {
+			"Description": "The route table ID to use for opening internet and nat gateway",
+			"Value": {
+				"Ref": "RouteTable2"
+			},
+			"Export": {
+				"Name": {
+					"Fn::Sub": "${AWS::StackName}-RouteTableID"
 				}
 			}
 		}
@@ -137,7 +131,6 @@
 					"Subnet1",
 					"Subnet3",
 					"Subnet2",
-					"RouteTable1",
 					"RouteTable2"
 				]
 			}
