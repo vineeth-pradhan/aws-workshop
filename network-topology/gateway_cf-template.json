@@ -1,0 +1,64 @@
+{
+  "Resources": {
+    "InternetGateway": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ig-001"
+          }
+        ]
+      }
+    },
+    "VPCGatewayAttachment": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Fn::ImportValue": {
+            "Fn::Sub": "${NetworkTopologyStackName}-VPCID"
+          }
+        },
+        "InternetGatewayId": {
+          "Ref": "InternetGateway"
+        }
+      }
+    },
+    "Route": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Fn::ImportValue": {
+            "Fn::Sub": "${NetworkTopologyStackName}-PublicRouteTableID"
+          }
+        },
+        "GatewayId": {
+          "Ref": "InternetGateway"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0"
+      }
+    },
+    "SubnetRouteTableAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Fn::ImportValue": {
+            "Fn::Sub": "${NetworkTopologyStackName}-PublicRouteTableID"
+          }
+        },
+        "SubnetId": {
+          "Fn::ImportValue": {
+            "Fn::Sub": "${NetworkTopologyStackName}-PublicSubnetID"
+          }
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "NetworkTopologyStackName": {
+      "Description": "The name of the cloud formation template where the VPC and other mandatory resources are located",
+      "Type": "String",
+      "Default": "NetworkTopology"
+    }
+  }
+}
