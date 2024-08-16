@@ -1,139 +1,150 @@
 {
-	"Resources": {
-		"VPC": {
-			"Type": "AWS::EC2::VPC",
-			"Properties": {
-				"CidrBlock": "10.0.0.0/16",
-				"EnableDnsSupport": true,
-				"EnableDnsHostnames": true,
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": "vpc-02"
-					}
-				]
-			}
-		},
-		"SecurityGroup": {
-			"Type": "AWS::EC2::SecurityGroup",
-			"Properties": {
-				"GroupDescription": "vpc-02 security group",
-				"GroupName": "StrictFirewall-02",
-				"SecurityGroupIngress": [
-					{
-						"IpProtocol": "tcp",
-						"FromPort": 80,
-						"ToPort": 80,
-						"CidrIp": "0.0.0.0/0"
-					}
-				],
-				"SecurityGroupEgress": [
-					{
-						"IpProtocol": "tcp",
-						"FromPort": 80,
-						"ToPort": 80,
-						"CidrIp": "0.0.0.0/0"
-					}
-				],
-				"VpcId": {
-					"Ref": "VPC"
-				}
-			}
-		},
-		"Subnet1": {
-			"Type": "AWS::EC2::Subnet",
-			"Properties": {
-				"VpcId": {
-					"Ref": "VPC"
-				},
-				"CidrBlock": "10.0.1.0/24",
-				"AvailabilityZone": "ap-south-1a",
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": "10.0.1.0/24 - private - ap-south-1a"
-					}
-				]
-			}
-		},
-		"Subnet2": {
-			"Type": "AWS::EC2::Subnet",
-			"Properties": {
-				"VpcId": {
-					"Ref": "VPC"
-				},
-				"CidrBlock": "10.0.2.0/24",
-				"AvailabilityZone": "ap-south-1a",
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": "10.0.2.0/24 - public - ap-south-1a"
-					}
-				]
-			}
-		},
-		"Subnet3": {
-			"Type": "AWS::EC2::Subnet",
-			"Properties": {
-				"VpcId": {
-					"Ref": "VPC"
-				},
-				"CidrBlock": "10.0.3.0/24",
-				"AvailabilityZone": "ap-south-1b",
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": "10.0.3.0/24 - private - ap-south-1b"
-					}
-				]
-			}
-		},
-		"RouteTable2": {
-			"Type": "AWS::EC2::RouteTable",
-			"Properties": {
-				"VpcId": {
-					"Ref": "VPC"
-				}
-			}
-		}
-	},
-	"Outputs": {
-		"PublicSubnet": {
-			"Description": "The subnet ID to use for associating route table",
-			"Value": {
-				"Ref": "Subnet2"
-			},
-			"Export": {
-				"Name": {
-					"Fn::Sub": "${AWS::StackName}-SubnetID"
-				}
-			}
-		},
-		"PublicRouteTable": {
-			"Description": "The route table ID to use for opening internet and nat gateway",
-			"Value": {
-				"Ref": "RouteTable2"
-			},
-			"Export": {
-				"Name": {
-					"Fn::Sub": "${AWS::StackName}-RouteTableID"
-				}
-			}
-		}
-	},
-	"Metadata": {
-		"AWS::Composer::Groups": {
-			"Group": {
-				"Label": "Group",
-				"Members": [
-					"SecurityGroup",
-					"VPC",
-					"Subnet1",
-					"Subnet3",
-					"Subnet2",
-					"RouteTable2"
-				]
-			}
-		}
-	}
+  "Resources": {
+    "VPC": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsSupport": true,
+        "EnableDnsHostnames": true,
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "vpc-02"
+          }
+        ]
+      }
+    },
+    "SecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "vpc-02 security group",
+        "GroupName": "StrictFirewall-02",
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 80,
+            "ToPort": 80,
+            "CidrIp": "0.0.0.0/0"
+          }
+        ],
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 80,
+            "ToPort": 80,
+            "CidrIp": "0.0.0.0/0"
+          }
+        ],
+        "VpcId": {
+          "Ref": "VPC"
+        }
+      }
+    },
+    "Subnet1": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "CidrBlock": "10.0.1.0/24",
+        "AvailabilityZone": "ap-south-1a",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "10.0.1.0/24 - private - ap-south-1a"
+          }
+        ]
+      }
+    },
+    "Subnet2": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "CidrBlock": "10.0.2.0/24",
+        "AvailabilityZone": "ap-south-1a",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "10.0.2.0/24 - public - ap-south-1a"
+          }
+        ]
+      }
+    },
+    "Subnet3": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "CidrBlock": "10.0.3.0/24",
+        "AvailabilityZone": "ap-south-1b",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "10.0.3.0/24 - private - ap-south-1b"
+          }
+        ]
+      }
+    },
+    "RouteTable2": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "PublicSubnet": {
+      "Description": "The subnet ID to use for associating route table",
+      "Value": {
+        "Ref": "Subnet2"
+      },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${AWS::StackName}-PublicSubnetID"
+        }
+      }
+    },
+    "PublicRouteTable": {
+      "Description": "The route table ID to use for opening internet and nat gateway",
+      "Value": {
+        "Ref": "RouteTable2"
+      },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${AWS::StackName}-PublicRouteTableID"
+        }
+      }
+    },
+    "VPC": {
+      "Description": "Main VPC to use for sharing the network topology",
+      "Value": {
+        "Ref": "VPC"
+      },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${AWS::StackName}-VPCID"
+        }
+      }
+    }
+  },
+  "Metadata": {
+    "AWS::Composer::Groups": {
+      "Group": {
+        "Label": "Group",
+        "Members": [
+          "SecurityGroup",
+          "VPC",
+          "Subnet1",
+          "Subnet3",
+          "Subnet2",
+          "RouteTable2"
+        ]
+      }
+    }
+  }
 }
