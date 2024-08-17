@@ -16,7 +16,7 @@
       "Properties": {
         "VpcId": {
           "Fn::ImportValue": {
-            "Fn::Sub": "${NetworkTopologyStackName}-VPCID"
+            "Fn::Sub": "${NetworkTopologyStackName}-vpcId"
           }
         },
         "InternetGatewayId": {
@@ -24,12 +24,12 @@
         }
       }
     },
-    "Route": {
+    "InternetGatewayRoute": {
       "Type": "AWS::EC2::Route",
       "Properties": {
         "RouteTableId": {
           "Fn::ImportValue": {
-            "Fn::Sub": "${NetworkTopologyStackName}-PublicRouteTableID"
+            "Fn::Sub": "${NetworkTopologyStackName}-publicRouteTableId"
           }
         },
         "GatewayId": {
@@ -38,19 +38,98 @@
         "DestinationCidrBlock": "0.0.0.0/0"
       }
     },
-    "SubnetRouteTableAssociation": {
+    "SubnetRouteTableAssociationPublic": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
       "Properties": {
         "RouteTableId": {
           "Fn::ImportValue": {
-            "Fn::Sub": "${NetworkTopologyStackName}-PublicRouteTableID"
+            "Fn::Sub": "${NetworkTopologyStackName}-publicRouteTableId"
           }
         },
         "SubnetId": {
           "Fn::ImportValue": {
-            "Fn::Sub": "${NetworkTopologyStackName}-PublicSubnetID"
+            "Fn::Sub": "${NetworkTopologyStackName}-publicSubnetId"
           }
         }
+      }
+    },
+    "SubnetRouteTableAssociationPrivate1": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Fn::ImportValue": {
+            "Fn::Sub": "${NetworkTopologyStackName}-privateRouteTableId"
+          }
+        },
+        "SubnetId": {
+          "Fn::ImportValue": {
+            "Fn::Sub": "${NetworkTopologyStackName}-privateSubnetId1"
+          }
+        }
+      }
+    },
+    "SubnetRouteTableAssociationPrivate2": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Fn::ImportValue": {
+            "Fn::Sub": "${NetworkTopologyStackName}-privateRouteTableId"
+          }
+        },
+        "SubnetId": {
+          "Fn::ImportValue": {
+            "Fn::Sub": "${NetworkTopologyStackName}-privateSubnetId3"
+          }
+        }
+      }
+    },
+    "NatGateway": {
+      "Type": "AWS::EC2::NatGateway",
+      "Properties": {
+        "SubnetId": {
+          "Fn::ImportValue": {
+            "Fn::Sub": "${NetworkTopologyStackName}-publicSubnetId"
+          }
+        },
+        "AllocationId": {
+          "Fn::ImportValue": {
+            "Fn::Sub": "${NetworkTopologyStackName}-eipAllocationId"
+          }
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "nat-001"
+          }
+        ]
+      }
+    },
+    "NatGatewayRoute1": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Fn::ImportValue": {
+            "Fn::Sub": "${NetworkTopologyStackName}-publicRouteTableId"
+          }
+        },
+        "NatGatewayId": {
+          "Ref": "NatGateway"
+        },
+        "DestinationCidrBlock": "10.0.1.0/24"
+      }
+    },
+    "NatGatewayRoute2": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Fn::ImportValue": {
+            "Fn::Sub": "${NetworkTopologyStackName}-publicRouteTableId"
+          }
+        },
+        "NatGatewayId": {
+          "Ref": "NatGateway"
+        },
+        "DestinationCidrBlock": "10.0.3.0/24"
       }
     }
   },
@@ -59,6 +138,19 @@
       "Description": "The name of the cloud formation template where the VPC and other mandatory resources are located",
       "Type": "String",
       "Default": "NetworkTopology"
+    }
+  },
+  "Outputs": {
+    "natGatewayId": {
+      "Description": "Nat gateway resource definitions",
+      "Value": {
+        "Ref": "NatGateway"
+      },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${AWS::StackName}-natGatewayId"
+        }
+      }
     }
   }
 }
