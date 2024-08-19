@@ -28,6 +28,12 @@
 					},
 					{
 						"IpProtocol": "tcp",
+						"FromPort": 443,
+						"ToPort": 443,
+						"CidrIp": "0.0.0.0/0"
+					},
+					{
+						"IpProtocol": "tcp",
 						"FromPort": 22,
 						"ToPort": 22,
 						"CidrIp": "0.0.0.0/0"
@@ -35,9 +41,7 @@
 				],
 				"SecurityGroupEgress": [
 					{
-						"IpProtocol": "tcp",
-						"FromPort": 80,
-						"ToPort": 80,
+						"IpProtocol": "-1",
 						"CidrIp": "0.0.0.0/0"
 					}
 				],
@@ -94,6 +98,14 @@
 				]
 			}
 		},
+		"RouteTable1": {
+			"Type": "AWS::EC2::RouteTable",
+			"Properties": {
+				"VpcId": {
+					"Ref": "VPC"
+				}
+			}
+		},
 		"RouteTable2": {
 			"Type": "AWS::EC2::RouteTable",
 			"Properties": {
@@ -110,25 +122,58 @@
 		}
 	},
 	"Outputs": {
-		"publicSubnetId": {
+		"publicSubnetId2": {
 			"Description": "The subnet ID to use for associating route table",
 			"Value": {
 				"Ref": "Subnet2"
 			},
 			"Export": {
 				"Name": {
-					"Fn::Sub": "${AWS::StackName}-publicSubnetId"
+					"Fn::Sub": "${AWS::StackName}-publicSubnetId2"
+				}
+			}
+		},
+		"privateSubnetId1": {
+			"Description": "The subnet ID to use for associating route table",
+			"Value": {
+				"Ref": "Subnet1"
+			},
+			"Export": {
+				"Name": {
+					"Fn::Sub": "${AWS::StackName}-privateSubnetId1"
+				}
+			}
+		},
+		"privateSubnetId3": {
+			"Description": "The subnet ID to use for associating route table",
+			"Value": {
+				"Ref": "Subnet3"
+			},
+			"Export": {
+				"Name": {
+					"Fn::Sub": "${AWS::StackName}-privateSubnetId3"
 				}
 			}
 		},
 		"publicRouteTableId": {
-			"Description": "The route table ID to use for opening internet and nat gateway",
+			"Description": "The route table ID for public EC2 instances",
 			"Value": {
 				"Ref": "RouteTable2"
 			},
 			"Export": {
 				"Name": {
 					"Fn::Sub": "${AWS::StackName}-publicRouteTableId"
+				}
+			}
+		},
+		"privateRouteTableId": {
+			"Description": "The route table ID for private EC2 instances",
+			"Value": {
+				"Ref": "RouteTable1"
+			},
+			"Export": {
+				"Name": {
+					"Fn::Sub": "${AWS::StackName}-privateRouteTableId"
 				}
 			}
 		},
@@ -168,7 +213,9 @@
 					"Subnet1",
 					"Subnet3",
 					"Subnet2",
-					"RouteTable2"
+					"RouteTable1",
+					"RouteTable2",
+					"NATGatewayEIP"
 				]
 			}
 		}
